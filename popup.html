@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MV3 Starter</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- Header com título e controles -->
+  <header class="header">
+    <h1 id="appTitle" class="title">🔧 MV3 Starter</h1>
+    <div class="header-actions">
+      <button id="themeToggle" aria-label="Alternar tema" aria-pressed="false" class="icon-btn">
+        <span class="theme-icon">🌙</span>
+      </button>
+      <button id="optionsBtn" aria-label="Configurações" class="icon-btn">⚙️</button>
+    </div>
+  </header>
+
+  <!-- Data atual -->
+  <p id="dateDisplay" class="date">Carregando...</p>
+
+  <!-- Tabs (Segmented Control) com ARIA -->
+  <nav class="tabs" role="tablist" aria-label="Conteúdo">
+    <button id="tabGeneral" role="tab" aria-selected="true" aria-controls="panelGeneral" tabindex="0" class="tab">
+      <span id="tabLabelGeneral">Geral</span>
+    </button>
+    <button id="tabTips" role="tab" aria-selected="false" aria-controls="panelTips" tabindex="-1" class="tab">
+      <span id="tabLabelTips">Dicas</span>
+    </button>
+    <button id="tabAbout" role="tab" aria-selected="false" aria-controls="panelAbout" tabindex="-1" class="tab">
+      <span id="tabLabelAbout">Sobre</span>
+    </button>
+  </nav>
+
+  <p id="keyboardHint" class="keyboard-hint">Use ← → para navegar</p>
+
+  <!-- Panels -->
+  <main>
+    <section id="panelGeneral" role="tabpanel" aria-labelledby="tabGeneral" class="panel">
+      <p id="textGeneral">
+        Este é um <strong>starter</strong> de extensão Chrome MV3 offline com exemplos práticos de:
+        tema persistente, i18n, acessibilidade completa e Web APIs.
+      </p>
+    </section>
+
+    <section id="panelTips" role="tabpanel" aria-labelledby="tabTips" class="panel hidden">
+      <ul class="tips">
+        <li>📋 Tabs acessíveis (teclas ← →, Home/End)</li>
+        <li>🌗 Tema claro/escuro persistente (storage)</li>
+        <li>🌐 Conteúdo i18n PT/EN</li>
+        <li>⏰ Exemplo de alarms + notifications</li>
+        <li>📤 Web Share API com fallback</li>
+        <li>♿ ARIA completo e foco visível</li>
+      </ul>
+    </section>
+
+    <section id="panelAbout" role="tabpanel" aria-labelledby="tabAbout" class="panel hidden">
+      <p id="textAbout">
+        Starter educacional para extensões Chrome Manifest V3.
+        Sem dependências externas, 100% offline.
+      </p>
+      <p style="margin-top: 8px; opacity: 0.8; font-size: 13px;">
+        Desenvolvido como material de estudo para APIs de extensão e acessibilidade web.
+      </p>
+    </section>
+  </main>
+
+  <!-- Footer com botões de ação -->
+  <footer class="footer">
+    <button id="shareBtn" class="primary-btn">
+      <span id="shareLabel">📤 Compartilhar</span>
+    </button>
+    <button id="copyBtn" class="secondary-btn">
+      <span id="copyLabel">📋 Copiar</span>
+    </button>
+  </footer>
+
+  <script src="utils/date.js"></script>
+  <script src="utils/i18n.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
+

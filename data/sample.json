@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "title_pt": "Item de Exemplo 1",
+    "title_en": "Sample Item 1",
+    "description_pt": "Este é um exemplo de dado armazenado localmente.",
+    "description_en": "This is an example of locally stored data."
+  },
+  {
+    "id": 2,
+    "title_pt": "Item de Exemplo 2",
+    "title_en": "Sample Item 2",
+    "description_pt": "Você pode expandir este JSON com seus próprios dados.",
+    "description_en": "You can expand this JSON with your own data."
+  },
+  {
+    "id": 3,
+    "title_pt": "Item de Exemplo 3",
+    "title_en": "Sample Item 3",
+    "description_pt": "Tudo funciona offline, sem APIs externas.",
+    "description_en": "Everything works offline, without external APIs."
+  }
+]
+

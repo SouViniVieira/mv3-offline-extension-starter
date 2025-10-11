@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurações - MV3 Starter</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1 id="pageTitle">⚙️ Configurações</h1>
+    </header>
+
+    <!-- Mensagem de sucesso -->
+    <div id="successMessage" class="success-message hidden">
+      <span id="successText">✓ Configurações salvas com sucesso!</span>
+    </div>
+
+    <!-- Formulário de configurações -->
+    <form id="settingsForm" class="settings-form">
+      <!-- Idioma -->
+      <div class="setting-group">
+        <label for="languageSelect" id="labelLanguage" class="setting-label">🌐 Idioma</label>
+        <p id="descLanguage" class="setting-desc">Idioma da interface.</p>
+        <select id="languageSelect" class="setting-select">
+          <option value="pt">Português (PT-BR)</option>
+          <option value="en">English (EN)</option>
+        </select>
+      </div>
+
+      <!-- Tema -->
+      <div class="setting-group">
+        <label for="themeSelect" id="labelTheme" class="setting-label">🎨 Tema</label>
+        <p id="descTheme" class="setting-desc">Aparência da extensão.</p>
+        <select id="themeSelect" class="setting-select">
+          <option value="light" id="optionThemeLight">Claro</option>
+          <option value="dark" id="optionThemeDark">Escuro</option>
+        </select>
+      </div>
+
+      <!-- Lembrete diário -->
+      <div class="setting-group">
+        <label class="setting-label" id="labelReminder">
+          <input type="checkbox" id="reminderToggle" class="setting-checkbox">
+          🔔 Ativar lembrete diário
+        </label>
+        <p id="descReminder" class="setting-desc">Receba uma notificação no horário escolhido.</p>
+
+        <!-- Horário do lembrete (condicional) -->
+        <div id="reminderTimeContainer" class="time-container hidden">
+          <label for="reminderTime" id="labelReminderTime" class="time-label">⏰ Horário</label>
+          <input type="time" id="reminderTime" class="time-input" value="09:00">
+        </div>
+      </div>
+
+      <!-- Botão salvar -->
+      <button type="submit" id="saveBtn" class="save-btn">
+        <span id="saveBtnLabel">Salvar Configurações</span>
+      </button>
+    </form>
+
+    <!-- Informações sobre permissões -->
+    <section class="info-section">
+      <h2 id="infoTitle">ℹ️ Sobre as Permissões</h2>
+      <ul class="info-list">
+        <li><strong>storage:</strong> <span id="infoStorage">Armazena preferências localmente no navegador.</span></li>
+        <li><strong>alarms:</strong> <span id="infoAlarms">Agenda o lembrete diário no horário escolhido (apenas se ativado).</span></li>
+        <li><strong>notifications:</strong> <span id="infoNotifications">Exibe notificação do lembrete (apenas se ativado).</span></li>
+      </ul>
+      <p id="infoNote" class="info-note">
+        💡 Você pode desativar o lembrete a qualquer momento. 
+        Suas preferências são privadas e nunca saem do seu dispositivo.
+      </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p id="footerText">MV3 Starter v1.0.0 - Material educacional</p>
+    </footer>
+  </div>
+
+  <script src="utils/i18n.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
+

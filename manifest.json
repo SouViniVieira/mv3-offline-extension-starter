@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "MV3 Offline Starter",
+  "version": "1.0.0",
+  "description": "Starter de extensão MV3 offline com A11y, tema, i18n e Web APIs.",
+  "author": "Your Name",
+  
+  "action": {
+    "default_popup": "popup.html"
+  },
+  
+  "background": {
+    "service_worker": "background.js"
+  },
+  
+  "options_page": "options.html",
+  
+  "permissions": [
+    "storage",
+    "alarms",
+    "notifications"
+  ],
+  
+  "offline_enabled": true
+}
+
