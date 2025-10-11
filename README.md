@@ -1,93 +1,68 @@
 # MV3 Offline Extension Starter
 
-Base didática de extensão Chrome (Manifest V3) feita para rodar 100% offline, com acessibilidade completa, tema persistente, i18n PT/EN e exemplos práticos de `alarms` + `notifications` + Web APIs (Clipboard, Web Share, Canvas).
+Eu criei esta base (starter) de extensão Chrome Manifest V3 para quem quiser construir rapidamente uma extensão 100% offline, acessível, com tema persistente e conteúdo em PT/EN. A ideia é simples: você foca na sua lógica, e eu te entrego a fundação pronta (UX/A11y, storage, i18n, alarms/notifications e Web APIs).
 
-Pensado para portfólio e como ponto de partida: faça fork, troque os textos e plugue sua própria lógica de negócio.
+Repositório: `https://github.com/SouViniVieira/mv3-offline-extension-starter`
 
-## Destaques (para portfólio)
+## O que eu entreguei
 
-- **Offline-first**: tudo roda no navegador, sem servidores.
-- **A11y de verdade**: tabs com ARIA e navegação por teclado (← → Home/End).
-- **Tema claro/escuro**: persistente via `chrome.storage.local`.
-- **i18n PT/EN**: dicionário simples, pronto para expandir.
-- **Lembrete diário**: exemplo com `chrome.alarms` + `chrome.notifications`.
-- **Share/Clipboard/Canvas**: pronto para compartilhar texto e gerar PNGs.
+- **Arquitetura MV3 pronta**: `action` com popup, `options_page` e `background` service worker.
+- **Acessibilidade de verdade (A11y)**: tabs com ARIA, foco visível e navegação por teclado (← → Home/End).
+- **Tema claro/escuro persistente**: salva no `chrome.storage.local` e aplica na UI.
+- **i18n PT/EN**: dicionário simples (`utils/i18n.js`) e helper `t()` para textos.
+- **Lembrete diário** (opcional): configuração em `options`, agendamento com `chrome.alarms` e notificação com `chrome.notifications`.
+- **Web APIs úteis**: copiar para clipboard e compartilhar (Web Share) com fallback; util de Canvas pronto para gerar PNG (`utils/share.js`).
 
-> Ideal para demonstrar boas práticas de UX/A11y, uso das APIs do Chrome MV3 e organização de projeto sem frameworks.
+## Por que criei essa base
 
-## Como instalar (dev)
+- Para acelerar protótipos de extensão MV3 sem frameworks e sem dependências.
+- Para mostrar, no meu portfólio, boas práticas de UX/A11y, organização e uso das APIs do Chrome.
+- Para qualquer pessoa poder forkar e plugar sua própria ideia por cima.
+
+## Como testar em 30s
 
 1. Abra `chrome://extensions/`
 2. Ative "Modo do desenvolvedor"
 3. Clique em "Carregar sem compactação"
 4. Selecione a pasta deste projeto
 
+## Como adaptar para o seu projeto
+
+- Troque textos no `popup.html`/`popup.js` e traduções em `utils/i18n.js`.
+- Se quiser dados próprios, coloque em `data/` e consuma no `popup.js`.
+- Quer compartilhar como imagem? Inclua `utils/share.js` no `popup.html` e use o Canvas para gerar um PNG do seu conteúdo.
+- Use a página de `options` para preferências (tema/idioma) e, se fizer sentido, ative o lembrete diário.
+
+## Stack e decisões
+
+- **Sem frameworks**: HTML/CSS/JS puro para facilitar leitura e reuso.
+- **Offline-first**: nada sai do seu dispositivo; funciona sem internet.
+- **Manifest V3**: service worker (`background.js`) gerencia alarmes e notificações.
+- **Código organizado**: UI no `popup`, preferências em `options`, utilitários em `utils/`.
+
 ## Estrutura
 
 ```
 mv3-offline-extension-starter/
-├── manifest.json              # Manifest V3 (action, background, options)
+├── manifest.json              # Manifest V3 (popup, background, options)
 ├── popup.html/.css/.js        # UI principal: tabs, tema, i18n, share/copy
 ├── options.html/.css/.js      # Configurações: idioma, tema e lembrete diário
 ├── background.js              # Service worker: alarms + notifications
-├── data/                      # Dados de exemplo (não usados por padrão)
-└── utils/                     # Helpers (date, i18n, share via Canvas/Web Share)
+├── data/                      # Dados de exemplo (opcional)
+└── utils/                     # date, i18n e share via Canvas/Web Share
 ```
-
-## Como funciona
-
-- **Popup** (`popup.*`):
-  - Tabs acessíveis com setas do teclado e ARIA.
-  - Alterna tema e salva no `storage`.
-  - Mostra a data do dia e permite compartilhar/copiar conteúdo.
-- **Opções** (`options.*`):
-  - Define idioma/tema e ativa um lembrete diário com horário.
-  - Cria/limpa alarmes conforme o usuário salva.
-- **Background** (`background.js`):
-  - Inicializa defaults na instalação.
-  - Recria alarmes após updates.
-  - Dispara notificação diária e abre o popup ao clicar.
-- **Utils** (`utils/*`):
-  - `date.js`: formatação e chaves de data.
-  - `i18n.js`: dicionário PT/EN e helper `t`.
-  - `share.js`: render de cartão em Canvas + download/compartilhamento.
-
-## Personalize para sua ideia
-
-- Troque textos e labels no `popup.html`/`popup.js` e no `utils/i18n.js`.
-- Use `data/` para seus dados e consuma no `popup.js`.
-- Inclua `utils/share.js` no `popup.html` e gere uma imagem do conteúdo para compartilhar.
-- Ajuste o fluxo de notificação diária para seu caso (ex.: “conteúdo do dia”).
 
 ## Permissões e privacidade
 
 - **`storage`**: salva tema/idioma e preferências localmente.
-- **`alarms`** e **`notifications`**: usados apenas se o lembrete diário for ativado.
-- Nenhum dado sai do seu dispositivo. Funciona 100% offline.
-
-## Checklist para publicar no GitHub (portfólio)
-
-- Atualize o título/descrição do repositório para refletir o propósito do starter.
-- Adicione tópicos: `chrome-extension`, `manifest-v3`, `offline-first`, `a11y`, `i18n`, `web-apis`.
-- Inclua screenshots ou um GIF do popup e da página de opções.
-- Preencha este README com capturas reais do seu caso de uso.
-- Crie uma release `.zip` (opcional) para facilitar testes.
-
-Sugestão de descrição curta (repo subtitle):
-
-> Starter de extensão Chrome MV3 offline com A11y, tema, i18n, alarms/notifications e Web APIs – pronto para você plugar sua lógica.
-
-## Testar rapidamente
-
-1. Abra o popup, navegue com ← →, alterne tema e copie/compartilhe texto.
-2. Em "Opções", ative o lembrete diário, defina um horário próximo e salve.
-3. Acompanhe logs do service worker em `chrome://extensions`.
+- **`alarms`** e **`notifications`**: usados apenas se você ativar o lembrete diário.
+- **Privacidade**: 100% offline; nenhum dado é enviado para servidores.
 
 ## Licença
 
 MIT — veja `LICENSE`.
 
----
+—
 
-Feito como material educacional para extensões Chrome MV3 e como base de portfólio.
+Feito por mim como base reutilizável para projetos de extensão Chrome MV3. Se te ajudar, deixa uma estrela no repositório! ⭐
 
