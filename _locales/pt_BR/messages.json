@@ -1,0 +1,14 @@
+{
+  "extName": {
+    "message": "MV3 Starter",
+    "description": "Nome da extensão na Chrome Web Store e em chrome://extensions."
+  },
+  "extDescription": {
+    "message": "Uma base acessível e offline para extensões Chrome Manifest V3: tema, idioma e lembrete diário.",
+    "description": "Descrição da extensão."
+  },
+  "actionTitle": {
+    "message": "Abrir o MV3 Starter",
+    "description": "Dica do botão na barra de ferramentas."
+  }
+}

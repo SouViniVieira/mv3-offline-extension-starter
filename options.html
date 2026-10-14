@@ -1,87 +1,68 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Configurações - MV3 Starter</title>
-  <link rel="stylesheet" href="options.css">
-</head>
-<body>
-  <div class="container">
-    <header class="header">
-      <h1 id="pageTitle">⚙️ Configurações</h1>
-    </header>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MV3 Starter · Configurações</title>
+    <link rel="stylesheet" href="src/shared/tokens.css" />
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1 data-i18n="optionsTitle">Configurações</h1>
 
-    <!-- Mensagem de sucesso -->
-    <div id="successMessage" class="success-message hidden">
-      <span id="successText">✓ Configurações salvas com sucesso!</span>
-    </div>
-
-    <!-- Formulário de configurações -->
-    <form id="settingsForm" class="settings-form">
-      <!-- Idioma -->
-      <div class="setting-group">
-        <label for="languageSelect" id="labelLanguage" class="setting-label">🌐 Idioma</label>
-        <p id="descLanguage" class="setting-desc">Idioma da interface.</p>
-        <select id="languageSelect" class="setting-select">
-          <option value="pt">Português (PT-BR)</option>
-          <option value="en">English (EN)</option>
-        </select>
-      </div>
-
-      <!-- Tema -->
-      <div class="setting-group">
-        <label for="themeSelect" id="labelTheme" class="setting-label">🎨 Tema</label>
-        <p id="descTheme" class="setting-desc">Aparência da extensão.</p>
-        <select id="themeSelect" class="setting-select">
-          <option value="light" id="optionThemeLight">Claro</option>
-          <option value="dark" id="optionThemeDark">Escuro</option>
-        </select>
-      </div>
-
-      <!-- Lembrete diário -->
-      <div class="setting-group">
-        <label class="setting-label" id="labelReminder">
-          <input type="checkbox" id="reminderToggle" class="setting-checkbox">
-          🔔 Ativar lembrete diário
-        </label>
-        <p id="descReminder" class="setting-desc">Receba uma notificação no horário escolhido.</p>
-
-        <!-- Horário do lembrete (condicional) -->
-        <div id="reminderTimeContainer" class="time-container hidden">
-          <label for="reminderTime" id="labelReminderTime" class="time-label">⏰ Horário</label>
-          <input type="time" id="reminderTime" class="time-input" value="09:00">
+      <form id="settingsForm" class="form" novalidate>
+        <div class="field">
+          <label for="language" data-i18n="language">Idioma</label>
+          <p id="language-help" class="help" data-i18n="languageHelp">Idioma da interface da extensão.</p>
+          <select id="language" aria-describedby="language-help">
+            <option value="pt" lang="pt-BR">Português (Brasil)</option>
+            <option value="en" lang="en">English</option>
+          </select>
         </div>
-      </div>
 
-      <!-- Botão salvar -->
-      <button type="submit" id="saveBtn" class="save-btn">
-        <span id="saveBtnLabel">Salvar Configurações</span>
-      </button>
-    </form>
+        <div class="field">
+          <label for="theme" data-i18n="theme">Tema</label>
+          <p id="theme-help" class="help" data-i18n="themeHelp">Aparência do popup e desta página.</p>
+          <select id="theme" aria-describedby="theme-help">
+            <option value="system" data-i18n="themeSystem">Igual ao sistema</option>
+            <option value="light" data-i18n="themeLight">Claro</option>
+            <option value="dark" data-i18n="themeDark">Escuro</option>
+          </select>
+        </div>
 
-    <!-- Informações sobre permissões -->
-    <section class="info-section">
-      <h2 id="infoTitle">ℹ️ Sobre as Permissões</h2>
-      <ul class="info-list">
-        <li><strong>storage:</strong> <span id="infoStorage">Armazena preferências localmente no navegador.</span></li>
-        <li><strong>alarms:</strong> <span id="infoAlarms">Agenda o lembrete diário no horário escolhido (apenas se ativado).</span></li>
-        <li><strong>notifications:</strong> <span id="infoNotifications">Exibe notificação do lembrete (apenas se ativado).</span></li>
-      </ul>
-      <p id="infoNote" class="info-note">
-        💡 Você pode desativar o lembrete a qualquer momento. 
-        Suas preferências são privadas e nunca saem do seu dispositivo.
-      </p>
-    </section>
+        <div class="field">
+          <div class="check">
+            <input type="checkbox" id="reminderEnabled" aria-describedby="reminder-help" aria-controls="reminder-time-field" />
+            <label for="reminderEnabled" data-i18n="reminder">Ativar lembrete diário</label>
+          </div>
+          <p id="reminder-help" class="help" data-i18n="reminderHelp">Uma notificação por dia, no horário escolhido.</p>
 
-    <!-- Footer -->
-    <footer class="footer">
-      <p id="footerText">MV3 Starter v1.0.0 - Material educacional</p>
-    </footer>
-  </div>
+          <div id="reminder-time-field" class="sub-field" hidden>
+            <label for="reminderTime" data-i18n="reminderTime">Horário do lembrete</label>
+            <input type="time" id="reminderTime" required />
+          </div>
+        </div>
 
-  <script src="utils/i18n.js"></script>
-  <script src="options.js"></script>
-</body>
+        <button type="submit" id="saveBtn" class="btn btn-primary" data-i18n="save">Salvar configurações</button>
+        <p id="status" class="status" role="status"></p>
+      </form>
+
+      <section class="info" aria-labelledby="permissions-title">
+        <h2 id="permissions-title" data-i18n="permissionsTitle">Por que a extensão pede estas permissões</h2>
+        <ul>
+          <li><code>storage</code>: <span data-i18n="permStorage">guarda suas preferências neste navegador.</span></li>
+          <li><code>alarms</code>: <span data-i18n="permAlarms">agenda o lembrete diário, só se você ativar.</span></li>
+          <li><code>notifications</code>: <span data-i18n="permNotifications">mostra o lembrete, só se você ativar.</span></li>
+        </ul>
+        <p data-i18n="privacy">Você pode desligar o lembrete quando quiser. Suas preferências nunca saem do seu dispositivo.</p>
+      </section>
+
+      <footer class="footer">
+        <p><span data-i18n="footer">MV3 Starter · material de estudo</span> · v<span id="version"></span></p>
+      </footer>
+    </main>
+
+    <script type="module" src="options.js"></script>
+  </body>
 </html>
-

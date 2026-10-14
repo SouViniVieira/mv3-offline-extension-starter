@@ -1,0 +1,147 @@
+/*
+ * Shared design tokens for the popup and the Options page.
+ * Contrast checked against WCAG 2.2 AA (text 4.5:1, UI controls 3:1):
+ *   light  text 17.1 · muted 8.7 · accent 7.2 · control 3.9
+ *   dark   text 14.9 · muted 8.7 · accent 6.6 · control 4.1
+ * No text uses opacity, so these ratios hold on screen.
+ */
+:root {
+  color-scheme: light;
+  --bg: #f7f5ff;
+  --surface: #ffffff;
+  --text: #1f1637;
+  --muted: #4f4668;
+  --accent: #5b34d6;
+  --accent-contrast: #ffffff;
+  --accent-soft: #ece6ff;
+  --border: #ddd6f3;
+  --control: #857ba3;
+  --success: #1a7f37;
+  --danger: #b3261e;
+  --radius: 10px;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --bg: #0f0b1e;
+    --surface: #1a1530;
+    --text: #edeaff;
+    --muted: #b9b2d6;
+    --accent: #a98bff;
+    --accent-contrast: #0f0b1e;
+    --accent-soft: #2a2148;
+    --border: #3a3158;
+    --control: #7d74a0;
+    --success: #6fdd8b;
+    --danger: #ffb4ab;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f0b1e;
+  --surface: #1a1530;
+  --text: #edeaff;
+  --muted: #b9b2d6;
+  --accent: #a98bff;
+  --accent-contrast: #0f0b1e;
+  --accent-soft: #2a2148;
+  --border: #3a3158;
+  --control: #7d74a0;
+  --success: #6fdd8b;
+  --danger: #ffb4ab;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 2px solid var(--control);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: var(--accent);
+}
+
+.btn-primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-contrast);
+}
+
+.btn:disabled,
+.btn[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+.status {
+  min-height: 1.5em;
+  margin: 0.75rem 0 0;
+  font-weight: 600;
+}
+
+.status[data-state='success'] {
+  color: var(--success);
+}
+
+.status[data-state='error'] {
+  color: var(--danger);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Windows high contrast: keep the selected tab and buttons distinguishable */
+@media (forced-colors: active) {
+  .btn,
+  [role='tab'][aria-selected='true'] {
+    border: 2px solid ButtonText;
+  }
+}

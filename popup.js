@@ -1,235 +1,91 @@
-/**
- * Popup Principal
- * Demonstra tabs acessíveis, tema persistente e i18n
- */
+import { formatToday, t, translatePage } from './src/shared/i18n.js';
+import { applyTheme, effectiveTheme, getSettings, saveSettings } from './src/shared/settings.js';
+import { announce } from './src/shared/announce.js';
 
-// Estado da aplicação
-let currentLang = 'pt';
-let currentTheme = 'dark';
-let activeTab = 'general';
+const status = document.getElementById('status');
+const themeToggle = document.getElementById('themeToggle');
+const tabs = [...document.querySelectorAll('[role="tab"]')];
 
-// Elementos DOM
-let elements = {};
+let settings = await getSettings();
 
-/**
- * Inicializa a aplicação
- */
-async function init() {
-  // Capturar elementos DOM
-  elements = {
-    appTitle: document.getElementById('appTitle'),
-    dateDisplay: document.getElementById('dateDisplay'),
-    themeToggle: document.getElementById('themeToggle'),
-    optionsBtn: document.getElementById('optionsBtn'),
-    tabGeneral: document.getElementById('tabGeneral'),
-    tabTips: document.getElementById('tabTips'),
-    tabAbout: document.getElementById('tabAbout'),
-    tabLabelGeneral: document.getElementById('tabLabelGeneral'),
-    tabLabelTips: document.getElementById('tabLabelTips'),
-    tabLabelAbout: document.getElementById('tabLabelAbout'),
-    panelGeneral: document.getElementById('panelGeneral'),
-    panelTips: document.getElementById('panelTips'),
-    panelAbout: document.getElementById('panelAbout'),
-    shareBtn: document.getElementById('shareBtn'),
-    copyBtn: document.getElementById('copyBtn'),
-    shareLabel: document.getElementById('shareLabel'),
-    copyLabel: document.getElementById('copyLabel'),
-    keyboardHint: document.getElementById('keyboardHint')
-  };
+function render() {
+  applyTheme(settings.theme);
+  translatePage(settings.lang);
+  document.getElementById('today').textContent = formatToday(settings.lang);
+  document.getElementById('tipsList').replaceChildren(
+    ...t('tips', settings.lang).map((tip) => Object.assign(document.createElement('li'), { textContent: tip })),
+  );
+  themeToggle.setAttribute('aria-pressed', String(effectiveTheme(settings.theme) === 'dark'));
+}
 
-  // Event listeners
-  elements.themeToggle.addEventListener('click', toggleTheme);
-  elements.optionsBtn.addEventListener('click', openOptions);
-  elements.shareBtn.addEventListener('click', shareCard);
-  elements.copyBtn.addEventListener('click', copyText);
+// Theme toggle: switches between light and dark explicitly.
+themeToggle.addEventListener('click', async () => {
+  const next = effectiveTheme(settings.theme) === 'dark' ? 'light' : 'dark';
+  settings = { ...settings, theme: next };
+  await saveSettings({ theme: next });
+  render();
+});
 
-  // Tab navigation
-  const tabs = [elements.tabGeneral, elements.tabTips, elements.tabAbout];
-  tabs.forEach(tab => {
-    tab.addEventListener('click', () => switchTab(tab.id.replace('tab', '').toLowerCase()));
-    tab.addEventListener('keydown', handleTabKeyboard);
+document.getElementById('optionsBtn').addEventListener('click', () => chrome.runtime.openOptionsPage());
+
+// Tabs: only the selected tab is in the Tab order; arrows, Home and End move between tabs.
+function selectTab(tab, { focus = true } = {}) {
+  for (const other of tabs) {
+    const selected = other === tab;
+    other.setAttribute('aria-selected', String(selected));
+    other.tabIndex = selected ? 0 : -1;
+    document.getElementById(other.getAttribute('aria-controls')).hidden = !selected;
+  }
+  if (focus) tab.focus();
+}
+
+for (const tab of tabs) {
+  tab.addEventListener('click', () => selectTab(tab));
+  tab.addEventListener('keydown', (event) => {
+    const index = tabs.indexOf(tab);
+    const target = {
+      ArrowRight: tabs[(index + 1) % tabs.length],
+      ArrowLeft: tabs[(index - 1 + tabs.length) % tabs.length],
+      Home: tabs[0],
+      End: tabs[tabs.length - 1],
+    }[event.key];
+    if (target === undefined) return;
+    event.preventDefault();
+    selectTab(target);
   });
-
-  // Carregar configurações
-  const storage = await chrome.storage.local.get(['lang', 'theme']);
-  currentLang = storage.lang || 'pt';
-  currentTheme = storage.theme || 'dark';
-
-  // Aplicar tema
-  applyTheme(currentTheme, false);
-
-  // Atualizar textos
-  updateUITexts();
-
-  // Exibir data
-  elements.dateDisplay.textContent = formatDateDisplay(getTodayKey(), currentLang);
 }
 
-/**
- * Alterna entre abas (segmented control)
- */
-function switchTab(tabName) {
-  const tabNames = ['general', 'tips', 'about'];
-  const tabs = [elements.tabGeneral, elements.tabTips, elements.tabAbout];
-  const panels = [elements.panelGeneral, elements.panelTips, elements.panelAbout];
-
-  // Atualizar ARIA attributes e visibilidade
-  tabs.forEach((tab, index) => {
-    const isSelected = tabNames[index] === tabName;
-    tab.setAttribute('aria-selected', isSelected);
-    tab.setAttribute('tabindex', isSelected ? '0' : '-1');
-    panels[index].classList.toggle('hidden', !isSelected);
-
-    // Foco no tab selecionado se foi navegação por teclado
-    if (isSelected && document.activeElement.getAttribute('role') === 'tab') {
-      tab.focus();
-    }
-  });
-
-  activeTab = tabName;
-}
-
-/**
- * Gerencia navegação por teclado nas tabs
- */
-function handleTabKeyboard(e) {
-  const tabs = [elements.tabGeneral, elements.tabTips, elements.tabAbout];
-  const tabNames = ['general', 'tips', 'about'];
-  const currentIndex = tabNames.indexOf(activeTab);
-
-  let newIndex = currentIndex;
-
-  if (e.key === 'ArrowRight') {
-    e.preventDefault();
-    newIndex = (currentIndex + 1) % tabs.length;
-  } else if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    newIndex = (currentIndex - 1 + tabs.length) % tabs.length;
-  } else if (e.key === 'Home') {
-    e.preventDefault();
-    newIndex = 0;
-  } else if (e.key === 'End') {
-    e.preventDefault();
-    newIndex = tabs.length - 1;
-  } else {
-    return;
-  }
-
-  switchTab(tabNames[newIndex]);
-}
-
-/**
- * Alterna tema claro/escuro
- */
-async function toggleTheme() {
-  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-  await applyTheme(currentTheme, true);
-}
-
-/**
- * Aplica o tema
- */
-async function applyTheme(theme, persist = true) {
-  const html = document.documentElement;
-  const themeIcon = elements.themeToggle.querySelector('.theme-icon');
-
-  if (theme === 'light') {
-    html.classList.add('theme-light');
-    themeIcon.textContent = '☀️';
-    elements.themeToggle.setAttribute('aria-pressed', 'true');
-    elements.themeToggle.setAttribute('aria-label', t('toggleThemeLight', currentLang));
-  } else {
-    html.classList.remove('theme-light');
-    themeIcon.textContent = '🌙';
-    elements.themeToggle.setAttribute('aria-pressed', 'false');
-    elements.themeToggle.setAttribute('aria-label', t('toggleThemeDark', currentLang));
-  }
-
-  if (persist) {
-    await chrome.storage.local.set({ theme });
-  }
-}
-
-/**
- * Atualiza textos da interface
- */
-function updateUITexts() {
-  elements.appTitle.textContent = '🔧 ' + t('appTitle', currentLang);
-  elements.shareLabel.textContent = t('shareButton', currentLang);
-  elements.copyLabel.textContent = t('copyButton', currentLang);
-  elements.tabLabelGeneral.textContent = t('tabs.general', currentLang);
-  elements.tabLabelTips.textContent = t('tabs.tips', currentLang);
-  elements.tabLabelAbout.textContent = t('tabs.about', currentLang);
-  elements.keyboardHint.textContent = t('keyboardHint', currentLang);
-  elements.optionsBtn.setAttribute('aria-label', t('optionsButton', currentLang));
-}
-
-/**
- * Compartilha usando Web Share API (com fallback)
- */
-async function shareCard() {
-  const text = t('shareText', currentLang) + ' - ' + formatDateDisplay(getTodayKey(), currentLang);
-  
+// Copy and share report back through the status region, which screen readers announce.
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  const panel = document.querySelector('[role="tabpanel"]:not([hidden])');
   try {
-    // Tentar Web Share API (se disponível)
+    await navigator.clipboard.writeText(panel.innerText.trim());
+    announce(status, t('copied', settings.lang));
+  } catch {
+    announce(status, t('actionError', settings.lang), { error: true });
+  }
+});
+
+document.getElementById('shareBtn').addEventListener('click', async () => {
+  const text = t('shareText', settings.lang);
+  try {
     if (navigator.share) {
-      await navigator.share({ 
-        title: t('appTitle', currentLang),
-        text: text 
-      });
-      showFeedback('shareLabel', 'shareSuccess');
+      await navigator.share({ title: t('appTitle', settings.lang), text });
+      announce(status, t('shared', settings.lang));
     } else {
-      // Fallback: copiar para clipboard
       await navigator.clipboard.writeText(text);
-      showFeedback('shareLabel', 'shareSuccess');
+      announce(status, t('copied', settings.lang));
     }
   } catch (error) {
-    if (error.name !== 'AbortError') {
-      console.error('Error sharing:', error);
-      showFeedback('shareLabel', 'shareError');
-    }
+    if (error.name !== 'AbortError') announce(status, t('actionError', settings.lang), { error: true });
   }
-}
+});
 
-/**
- * Copia texto do painel ativo
- */
-async function copyText() {
-  const activePanel = document.querySelector('.panel:not(.hidden)');
-  const text = activePanel ? activePanel.innerText : '';
+// Keep in sync if settings change in the Options page while the popup is open.
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area !== 'local') return;
+  for (const [key, { newValue }] of Object.entries(changes)) settings = { ...settings, [key]: newValue };
+  render();
+});
 
-  try {
-    await navigator.clipboard.writeText(text);
-    showFeedback('copyLabel', 'copiedSuccess');
-  } catch (error) {
-    console.error('Error copying:', error);
-    showFeedback('copyLabel', 'copyError');
-  }
-}
-
-/**
- * Mostra feedback temporário no botão
- */
-function showFeedback(elementId, messageKey, duration = 1500) {
-  const element = elements[elementId];
-  const originalText = element.textContent;
-  element.textContent = t(messageKey, currentLang);
-  setTimeout(() => {
-    element.textContent = originalText;
-  }, duration);
-}
-
-/**
- * Abre a página de opções
- */
-function openOptions() {
-  chrome.runtime.openOptionsPage();
-}
-
-// Inicializar quando o DOM estiver pronto
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
-
+render();

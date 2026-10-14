@@ -1,85 +1,59 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MV3 Starter</title>
-  <link rel="stylesheet" href="popup.css">
-</head>
-<body>
-  <!-- Header com título e controles -->
-  <header class="header">
-    <h1 id="appTitle" class="title">🔧 MV3 Starter</h1>
-    <div class="header-actions">
-      <button id="themeToggle" aria-label="Alternar tema" aria-pressed="false" class="icon-btn">
-        <span class="theme-icon">🌙</span>
-      </button>
-      <button id="optionsBtn" aria-label="Configurações" class="icon-btn">⚙️</button>
-    </div>
-  </header>
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MV3 Starter</title>
+    <link rel="stylesheet" href="src/shared/tokens.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <h1 class="title"><span data-i18n="appTitle">MV3 Starter</span></h1>
+      <div class="header-actions">
+        <!-- Toggle button: the label stays the same, aria-pressed carries the state -->
+        <button type="button" id="themeToggle" class="icon-btn" aria-pressed="false" data-i18n-label="darkTheme" aria-label="Tema escuro">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5Z" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <button type="button" id="optionsBtn" class="icon-btn" data-i18n-label="settings" aria-label="Configurações">
+          <svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-1.8-.3 1.6 1.6 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-1-1.5 1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0 .3-1.8 1.6 1.6 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.5-1 1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 1 1.5 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V9a1.6 1.6 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1Z" />
+          </svg>
+        </button>
+      </div>
+    </header>
 
-  <!-- Data atual -->
-  <p id="dateDisplay" class="date">Carregando...</p>
+    <main>
+      <p id="today" class="date"></p>
 
-  <!-- Tabs (Segmented Control) com ARIA -->
-  <nav class="tabs" role="tablist" aria-label="Conteúdo">
-    <button id="tabGeneral" role="tab" aria-selected="true" aria-controls="panelGeneral" tabindex="0" class="tab">
-      <span id="tabLabelGeneral">Geral</span>
-    </button>
-    <button id="tabTips" role="tab" aria-selected="false" aria-controls="panelTips" tabindex="-1" class="tab">
-      <span id="tabLabelTips">Dicas</span>
-    </button>
-    <button id="tabAbout" role="tab" aria-selected="false" aria-controls="panelAbout" tabindex="-1" class="tab">
-      <span id="tabLabelAbout">Sobre</span>
-    </button>
-  </nav>
+      <!-- Tabs following the ARIA Authoring Practices pattern (automatic activation) -->
+      <div class="tabs" role="tablist" data-i18n-label="tabsLabel" aria-label="Conteúdo">
+        <button type="button" role="tab" id="tab-general" aria-controls="panel-general" aria-selected="true" tabindex="0" data-i18n="tabGeneral">Geral</button>
+        <button type="button" role="tab" id="tab-tips" aria-controls="panel-tips" aria-selected="false" tabindex="-1" data-i18n="tabTips">Dicas</button>
+        <button type="button" role="tab" id="tab-about" aria-controls="panel-about" aria-selected="false" tabindex="-1" data-i18n="tabAbout">Sobre</button>
+      </div>
+      <p class="hint" data-i18n="keyboardHint">Dica: use as setas para trocar de aba.</p>
 
-  <p id="keyboardHint" class="keyboard-hint">Use ← → para navegar</p>
+      <section id="panel-general" role="tabpanel" aria-labelledby="tab-general" tabindex="0" class="panel">
+        <p data-i18n="generalText">Um ponto de partida para extensões Chrome Manifest V3 que funcionam offline, com acessibilidade, tema e idioma resolvidos.</p>
+      </section>
+      <section id="panel-tips" role="tabpanel" aria-labelledby="tab-tips" tabindex="0" class="panel" hidden>
+        <ul id="tipsList" class="tips"></ul>
+      </section>
+      <section id="panel-about" role="tabpanel" aria-labelledby="tab-about" tabindex="0" class="panel" hidden>
+        <p data-i18n="aboutText">Material de estudo sem dependências: HTML, CSS e JavaScript em módulos. Nada sai do seu dispositivo.</p>
+      </section>
 
-  <!-- Panels -->
-  <main>
-    <section id="panelGeneral" role="tabpanel" aria-labelledby="tabGeneral" class="panel">
-      <p id="textGeneral">
-        Este é um <strong>starter</strong> de extensão Chrome MV3 offline com exemplos práticos de:
-        tema persistente, i18n, acessibilidade completa e Web APIs.
-      </p>
-    </section>
+      <div class="footer">
+        <button type="button" id="shareBtn" class="btn btn-primary" data-i18n="share">Compartilhar</button>
+        <button type="button" id="copyBtn" class="btn" data-i18n="copy">Copiar</button>
+      </div>
+      <p id="status" class="status" role="status"></p>
+    </main>
 
-    <section id="panelTips" role="tabpanel" aria-labelledby="tabTips" class="panel hidden">
-      <ul class="tips">
-        <li>📋 Tabs acessíveis (teclas ← →, Home/End)</li>
-        <li>🌗 Tema claro/escuro persistente (storage)</li>
-        <li>🌐 Conteúdo i18n PT/EN</li>
-        <li>⏰ Exemplo de alarms + notifications</li>
-        <li>📤 Web Share API com fallback</li>
-        <li>♿ ARIA completo e foco visível</li>
-      </ul>
-    </section>
-
-    <section id="panelAbout" role="tabpanel" aria-labelledby="tabAbout" class="panel hidden">
-      <p id="textAbout">
-        Starter educacional para extensões Chrome Manifest V3.
-        Sem dependências externas, 100% offline.
-      </p>
-      <p style="margin-top: 8px; opacity: 0.8; font-size: 13px;">
-        Desenvolvido como material de estudo para APIs de extensão e acessibilidade web.
-      </p>
-    </section>
-  </main>
-
-  <!-- Footer com botões de ação -->
-  <footer class="footer">
-    <button id="shareBtn" class="primary-btn">
-      <span id="shareLabel">📤 Compartilhar</span>
-    </button>
-    <button id="copyBtn" class="secondary-btn">
-      <span id="copyLabel">📋 Copiar</span>
-    </button>
-  </footer>
-
-  <script src="utils/date.js"></script>
-  <script src="utils/i18n.js"></script>
-  <script src="popup.js"></script>
-</body>
+    <script type="module" src="popup.js"></script>
+  </body>
 </html>
-
